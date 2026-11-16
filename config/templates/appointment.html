@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Запись на ремонт — АвтоСервис «Мотор»{% endblock %}
+
+{% block content %}
+<h1>Записаться на ремонт</h1>
+<p>Заполните форму, и мы перезвоним в течение 15 минут.</p>
+
+<form method="post" class="form">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit" class="btn btn-primary">Отправить заявку</button>
+</form>
+{% endblock %}

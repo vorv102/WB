@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Личный кабинет: {{ user.username }}</h1>
+
+<h3>Мои заявки</h3>
+<ul>
+    {% for app in appointments %}
+        <li>{{ app.date }} — {{ app.service }} ({{ app.status }})</li>
+    {% empty %}
+        <li>У вас пока нет заявок.</li>
+    {% endfor %}
+</ul>
+
+<hr>
+<h3>Оставить отзыв</h3>
+<form method="post">
+    {% csrf_token %}
+    {{ review_form.as_p }}
+    <button type="submit" class="btn btn-primary">Отправить</button>
+</form>
+
+<h3 style="margin-top:30px;">Отзывы клиентов</h3>
+{% for r in reviews %}
+    <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+        <strong>{{ r.user.username }}</strong> — {{ r.rating }} ⭐<br>
+        {{ r.text }}
+    </div>
+{% endfor %}
+{% endblock %}

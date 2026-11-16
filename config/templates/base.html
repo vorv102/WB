@@ -1,0 +1,78 @@
+{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}АвтоСервис «Мотор»{% endblock %}</title>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+<body>
+    <header style="background: #1f2937; box-shadow: 0 2px 8px rgba(0,0,0,.15); padding: 15px 20px; position: sticky; top: 0; z-index: 100;">
+        <div style="display: flex; align-items: center; justify-content: space-between; max-width: 1150px; margin: 0 auto;">
+
+            <!-- Логотип -->
+            <div style="flex: 1; display: flex; justify-content: flex-start;">
+                <a href="{% url 'home' %}" style="display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; font-weight: 700; font-size: 18px; font-family: 'Segoe UI', Arial, sans-serif;">
+                    <img src="{% static 'img/logo.png' %}" alt="logo" height="40">
+                    <span>АвтоСервис «Мотор»</span>
+                </a>
+            </div>
+
+            <!-- Меню по центру -->
+            <nav style="flex: 1; display: flex; justify-content: center; gap: 25px;">
+                <a href="{% url 'home' %}" style="color: #d1d5db; text-decoration: none; font-weight: 500; font-size: 15px; font-family: 'Segoe UI', Arial, sans-serif;">Главная</a>
+                <a href="{% url 'services' %}" style="color: #d1d5db; text-decoration: none; font-weight: 500; font-size: 15px; font-family: 'Segoe UI', Arial, sans-serif;">Услуги</a>
+                <a href="{% url 'masters' %}" style="color: #d1d5db; text-decoration: none; font-weight: 500; font-size: 15px; font-family: 'Segoe UI', Arial, sans-serif;">Мастера</a>
+                <a href="{% url 'appointment' %}" style="color: #d1d5db; text-decoration: none; font-weight: 500; font-size: 15px; font-family: 'Segoe UI', Arial, sans-serif;">Записаться</a>
+                <a href="{% url 'contacts' %}" style="color: #d1d5db; text-decoration: none; font-weight: 500; font-size: 15px; font-family: 'Segoe UI', Arial, sans-serif;">Контакты</a>
+            </nav>
+
+            <!-- Авторизация справа -->
+            <div style="flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 20px;">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'profile' %}" style="color: #d1d5db; text-decoration: none; font-weight: 500; font-size: 15px; font-family: 'Segoe UI', Arial, sans-serif;">Кабинет ({{ user.username }})</a>
+
+                    <form action="{% url 'logout' %}" method="post" style="display: inline; margin: 0; padding: 0;">
+                        {% csrf_token %}
+                        <button type="submit" style="background: transparent; border: none; color: #d1d5db; font-weight: 500; font-size: 15px; font-family: 'Segoe UI', Arial, sans-serif; cursor: pointer; padding: 0;">Выйти</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" style="color: #d1d5db; text-decoration: none; font-weight: 500; font-size: 15px; font-family: 'Segoe UI', Arial, sans-serif;">Войти</a>
+                    <a href="{% url 'register' %}" style="color: #d1d5db; text-decoration: none; font-weight: 500; font-size: 15px; font-family: 'Segoe UI', Arial, sans-serif;">Регистрация</a>
+                {% endif %}
+            </div>
+
+        </div>
+    </header>
+
+<main class="container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>© 2026 АвтоСервис «Мотор». Москва, ул. Гаражная, 15.</p>
+        <p>Работаем ежедневно с 9:00 до 21:00</p>
+    </div>
+</footer>
+</body>
+</html>
+
+{% if user.is_authenticated %}
+    <a href="{% url 'profile' %}">Кабинет ({{ user.username }})</a>
+    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" style="background:none; border:none; color:#d1d5db; cursor:pointer; font-family:inherit; font-size:inherit; padding:0;">
+        Выйти
+    </button>
+</form>
+{% else %}
+    <a href="{% url 'login' %}">Войти</a>
+{% endif %}

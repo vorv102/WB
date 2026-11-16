@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Мастера — АвтоСервис «Мотор»{% endblock %}
+
+{% block content %}
+<h1>Наши мастера</h1>
+<div class="masters">
+    {% for m in masters %}
+        <div class="master-card">
+            {% if m.photo %}
+                <img src="{{ m.photo.url }}" alt="{{ m.full_name }}">
+            {% else %}
+                <div class="photo-placeholder">👨‍🔧</div>
+            {% endif %}
+            <h3>{{ m.full_name }}</h3>
+            <p class="position">{{ m.position }}</p>
+            <p class="experience">Опыт: {{ m.experience }} лет</p>
+            <p>{{ m.description }}</p>
+        </div>
+    {% empty %}
+        <p>Информация о мастерах скоро появится.</p>
+    {% endfor %}
+</div>
+{% endblock %}

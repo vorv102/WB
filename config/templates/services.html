@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Услуги — АвтоСервис «Мотор»{% endblock %}
+
+{% block content %}
+<h1>Наши услуги</h1>
+
+{% for category in categories %}
+    <section class="category">
+        <h2>{{ category.name }}</h2>
+        <table class="services-table">
+            <thead>
+                <tr>
+                    <th>Услуга</th>
+                    <th>Описание</th>
+                    <th>Время</th>
+                    <th>Цена</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in category.services.all %}
+                    {% if s.is_active %}
+                    <tr>
+                        <td><strong>{{ s.name }}</strong></td>
+                        <td>{{ s.description }}</td>
+                        <td>{{ s.duration }} мин</td>
+                        <td class="price">{{ s.price|floatformat:0 }} ₽</td>
+                        <td><a href="{% url 'appointment' %}?service={{ s.id }}" class="btn btn-small">Записаться</a></td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+{% empty %}
+    <p>Услуги пока не добавлены.</p>
+{% endfor %}
+{% endblock %}

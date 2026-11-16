@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}АвтоСервис «Мотор» — ремонт авто в Москве{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Ремонт автомобилей любой сложности</h1>
+    <p>Опытные мастера, честные цены, гарантия на все работы — 1 год.</p>
+    <a href="{% url 'appointment' %}" class="btn btn-primary">Записаться на ремонт</a>
+</section>
+
+<section class="features">
+    <div class="feature">
+        <h3>⚙️ Оборудование</h3>
+        <p>Профессиональные стенды и диагностика.</p>
+    </div>
+    <div class="feature">
+        <h3>🛡️ Гарантия</h3>
+        <p>1 год на все виды работ.</p>
+    </div>
+    <div class="feature">
+        <h3>⏱️ Быстро</h3>
+        <p>Большинство работ — за 1 день.</p>
+    </div>
+</section>
+
+<section>
+    <h2>Популярные услуги</h2>
+    <div class="cards">
+        {% for s in popular_services %}
+            <div class="card">
+                <h3>{{ s.name }}</h3>
+                <p>{{ s.description|truncatewords:15 }}</p>
+                <div class="price">{{ s.price|floatformat:0 }} ₽</div>
+            </div>
+        {% endfor %}
+    </div>
+    <p><a href="{% url 'services' %}" class="btn">Все услуги →</a></p>
+</section>
+{% endblock %}
