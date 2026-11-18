@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>АвтоСервис «Мотор» — презентация проекта</title>
+<style>
+  :root{
+    --bg:#0b1120; --bg2:#111a2e; --card:rgba(255,255,255,.045);
+    --line:rgba(255,255,255,.10); --text:#e8eef8; --muted:#9aa9c2;
+    --amber:#fbbf24; --sky:#38bdf8; --green:#34d399; --red:#fb7185; --violet:#a78bfa;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden}
+  body{
+    font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Arial,sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(900px 600px at 85% -10%, rgba(251,191,36,.10), transparent 60%),
+      radial-gradient(800px 600px at -10% 110%, rgba(56,189,248,.10), transparent 60%),
+      var(--bg);
+  }
+  .deck{position:relative;width:100vw;height:100vh}
+  .slide{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    padding:clamp(26px,4.2vw,64px) clamp(28px,6vw,96px) clamp(70px,8vh,94px);
+    opacity:0;transform:translateY(18px) scale(.985);pointer-events:none;
+    transition:opacity .38s ease, transform .38s ease;
+  }
+  .slide.active{opacity:1;transform:none;pointer-events:auto}
+  .eyebrow{font-size:clamp(11px,1.05vw,14px);letter-spacing:.22em;text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:14px}
+  h1{font-size:clamp(38px,6vw,82px);line-height:1.02;margin:0 0 18px;letter-spacing:-.02em}
+  h2{font-size:clamp(27px,3.7vw,50px);line-height:1.1;margin:0 0 clamp(16px,2.2vh,28px);letter-spacing:-.01em}
+  h3{font-size:clamp(15px,1.5vw,20px);margin:0 0 8px;color:var(--text)}
+  p{color:var(--muted);font-size:clamp(14px,1.45vw,19px);line-height:1.55;margin:0 0 12px}
+  .lead{font-size:clamp(17px,2vw,27px);color:#cbd5e1;max-width:900px}
+  .accent{color:var(--amber)}
+  .sky{color:var(--sky)} .green{color:var(--green)} .red{color:var(--red)} .violet{color:var(--violet)}
+  .grid{display:grid;gap:clamp(10px,1.4vw,20px)}
+  .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:clamp(14px,1.7vw,24px)}
+  .card p{font-size:clamp(12px,1.15vw,16px);margin:0}
+  .card .num{font-size:12px;font-weight:800;color:var(--amber);letter-spacing:.1em;margin-bottom:8px}
+  .chip{display:inline-block;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);
+        color:#cbd5e1;font-size:clamp(11px,1.05vw,14px);margin:4px 7px 0 0}
+  .chips{margin-top:auto;padding-top:16px}
+  .tag{display:inline-block;font-size:clamp(10px,.95vw,13px);font-weight:700;padding:4px 10px;border-radius:7px;letter-spacing:.04em}
+  .tag.amber{background:rgba(251,191,36,.13);color:var(--amber)}
+  .tag.sky{background:rgba(56,189,248,.13);color:var(--sky)}
+  .tag.green{background:rgba(52,211,153,.13);color:var(--green)}
+  .tag.red{background:rgba(251,113,133,.13);color:var(--red)}
+  .tag.violet{background:rgba(167,139,250,.13);color:var(--violet)}
+  .row{display:flex;gap:clamp(10px,1.4vw,20px);align-items:stretch}
+  .grow{flex:1;min-width:0;min-height:0}
+  code,pre{font-family:Consolas,"Cascadia Code",Menlo,monospace}
+  pre{background:rgba(3,8,20,.7);border:1px solid var(--line);border-left:3px solid var(--amber);
+      border-radius:10px;padding:clamp(12px,1.5vw,20px);margin:0;font-size:clamp(11px,1.05vw,15px);
+      line-height:1.55;color:#cbd5e1;overflow:hidden;white-space:pre-wrap}
+  .flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .flow .node{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:10px;
+              padding:10px 14px;font-size:clamp(12px,1.15vw,16px);font-weight:600}
+  .flow .arr{color:var(--amber);font-weight:800}
+  .bullet{display:flex;gap:12px;align-items:flex-start;margin-bottom:clamp(9px,1.3vh,16px)}
+  .bullet .dot{flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:var(--amber);margin-top:8px}
+  .bullet p{margin:0}
+  .timeline{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;counter-reset:step}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 12px;position:relative}
+  .step:before{counter-increment:step;content:counter(step);display:flex;align-items:center;justify-content:center;
+    width:28px;height:28px;border-radius:50%;background:var(--amber);color:#0b1120;font-weight:800;font-size:14px;margin-bottom:10px}
+  .step p{font-size:clamp(10px,1vw,14px);margin:0}
+  .step b{color:var(--text)}
+  .note{font-size:clamp(11px,1.05vw,15px);color:var(--muted);margin-top:12px}
+  .big-link{font-size:clamp(17px,2.1vw,30px);font-weight:700;color:var(--amber);text-decoration:none;word-break:break-all}
+  .big-link:hover{text-decoration:underline}
+  .bottom{margin-top:auto;padding-top:14px;font-size:clamp(11px,1.05vw,14px);color:#6f809b}
+  /* мини-макеты страниц */
+  .mockwin{border:1px solid var(--line);border-radius:12px;background:#0d1527;overflow:hidden;display:flex;flex-direction:column;flex:1;min-height:0}
+  .mockbar{height:28px;background:#1b2740;display:flex;align-items:center;gap:5px;padding:0 10px;flex:0 0 auto}
+  .mockbar i{width:7px;height:7px;border-radius:50%;display:block}
+  .mockbar span{margin-left:8px;color:#7f90ad;font:10px Consolas,monospace}
+  .mockbody{padding:12px;flex:1;min-height:0;overflow:hidden}
+  .mockbody .hero{background:linear-gradient(135deg,rgba(251,191,36,.18),rgba(56,189,248,.10));border-radius:8px;padding:12px}
+  .mockbody .hero b{display:block;font-size:clamp(10px,1vw,13px);color:#fff}
+  .mockbody .hero span{display:block;font-size:9px;color:#a8b7ce;margin:5px 0 8px}
+  .mockbody .hero em{display:inline-block;font-style:normal;font-size:9px;background:var(--amber);color:#0b1120;border-radius:5px;padding:4px 8px;font-weight:700}
+  .minicards{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+  .mini{height:clamp(38px,6vh,54px);background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:6px;padding:6px;font-size:9px;color:#cbd5e1;overflow:hidden}
+  .mini b{display:block;font-size:9px;color:var(--amber);margin-bottom:3px}
+  .minihead{display:flex;justify-content:space-between;font-size:9px;color:var(--amber);border-bottom:1px solid var(--line);padding:4px 2px}
+  .minir{display:flex;justify-content:space-between;gap:4px;font-size:9px;color:#cbd5e1;border-bottom:1px solid rgba(255,255,255,.06);padding:7px 2px}
+  .minir span:last-child{color:var(--green)}
+  .minifield{font-size:9px;color:#9aa9c2;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:5px;padding:5px 7px;margin-bottom:6px}
+  .minibtn{font-size:9px;background:var(--amber);color:#0b1120;font-weight:700;border-radius:5px;padding:5px 9px;text-align:center;display:inline-block}
+  .mockgrid{grid-template-columns:repeat(3,1fr);min-height:0}
+  .mockcap{margin-top:6px;font-size:clamp(11px,1.15vw,15px);color:var(--text);font-weight:600}
+  .mockcap span{color:var(--amber);font-family:Consolas,monospace;font-size:11px;margin-left:6px}
+  /* controls */
+  .topbar{position:fixed;top:0;left:0;right:0;height:4px;background:rgba(255,255,255,.07);z-index:20}
+  .progress{height:100%;width:10%;background:linear-gradient(90deg,var(--amber),#f97316);transition:width .38s ease}
+  .controls{position:fixed;bottom:20px;left:0;right:0;display:flex;align-items:center;justify-content:space-between;
+    padding:0 clamp(28px,6vw,96px);z-index:20}
+  .dots{display:flex;gap:9px}
+  .dotbtn{width:10px;height:10px;border-radius:50%;border:1px solid #5b6b88;background:transparent;cursor:pointer;padding:0;transition:.25s}
+  .dotbtn.on{background:var(--amber);border-color:var(--amber);transform:scale(1.3)}
+  .nav{display:flex;align-items:center;gap:10px}
+  .counter{font-size:13px;color:#9aa9c2;margin-right:6px;font-variant-numeric:tabular-nums}
+  .arrow{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.05);
+    color:var(--text);font-size:18px;cursor:pointer;display:grid;place-items:center;transition:.2s}
+  .arrow:hover{background:var(--amber);color:#0b1120;border-color:var(--amber)}
+  .hint{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);color:#5b6b88;font-size:11px;z-index:15}
+  @media(max-height:760px){
+    .slide{padding-bottom:62px}
+    .card{padding:12px 14px}
+    .grid{gap:8px}
+    h2{margin-bottom:12px}
+  }
+  @media(max-width:900px){
+    .g3,.g4{grid-template-columns:repeat(2,1fr)}
+    .mockgrid{grid-template-columns:repeat(3,1fr)}
+    .mini{height:52px;font-size:8px}
+    .mini b{font-size:8px}
+    .minir,.minifield,.minihead{font-size:8px}
+    .timeline{grid-template-columns:repeat(4,1fr)}
+    .hint{display:none}
+  }
+  @media print{
+    html,body{overflow:visible;background:#fff;color:#111}
+    .deck{height:auto}
+    .slide{position:relative;inset:auto;height:100vh;page-break-after:always;opacity:1!important;transform:none!important;pointer-events:auto!important;
+      background:#0b1120;color:#e8eef8;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .controls,.hint,.topbar{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="progress" id="progress"></div></div>
+<div class="deck" id="deck">
+
+  <!-- 1 -->
+  <section class="slide active">
+    <div class="eyebrow">Учебный проект · веб-разработка на Django</div>
+    <h1>АвтоСервис <span class="accent">«Мотор»</span></h1>
+    <p class="lead">Сайт для онлайн-записи на ремонт автомобилей: услуги, цены, мастера, заявки и отзывы в одном месте.</p>
+    <p style="max-width:760px">Как я придумал, спроектировал, написал и отлаживал это приложение — за 10 слайдов.</p>
+    <div class="chips">
+      <span class="chip">Python 3.11</span><span class="chip">Django 5.2.17</span>
+      <span class="chip">SQLite</span><span class="chip">HTML5 / CSS3</span>
+      <span class="chip">Pillow</span><span class="chip">Git + GitHub</span>
+    </div>
+    <div class="bottom">Источник: <a class="big-link" href="https://github.com/vorv102/WB" target="_blank" rel="noopener" style="font-size:inherit">github.com/vorv102/WB</a></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide">
+    <div class="eyebrow">Зачем нужен сайт</div>
+    <h2>Проблема и цель проекта</h2>
+    <div class="grid g2 grow">
+      <div class="card">
+        <span class="tag red">БЫЛО</span>
+        <h3 style="margin-top:14px">Проблемы клиента и сервиса</h3>
+        <div class="bullet"><span class="dot" style="background:var(--red)"></span><p>Нельзя быстро узнать цены и длительность работ — приходится звонить.</p></div>
+        <div class="bullet"><span class="dot" style="background:var(--red)"></span><p>Не видно, кто именно будет ремонтировать автомобиль и с каким опытом.</p></div>
+        <div class="bullet"><span class="dot" style="background:var(--red)"></span><p>Запись идёт по телефону: заявки легко потерять, нет истории обращений.</p></div>
+      </div>
+      <div class="card">
+        <span class="tag green">СТАЛО</span>
+        <h3 style="margin-top:14px">Что даёт сайт</h3>
+        <div class="bullet"><span class="dot" style="background:var(--green)"></span><p>Публичный каталог услуг с ценой и временем выполнения.</p></div>
+        <div class="bullet"><span class="dot" style="background:var(--green)"></span><p>Страница мастеров с фото, должностью и стажем.</p></div>
+        <div class="bullet"><span class="dot" style="background:var(--green)"></span><p>Онлайн-заявка, личный кабинет и отзывы; админка для сотрудника.</p></div>
+      </div>
+    </div>
+    <p style="margin-top:18px"><span class="accent">Цель:</span> сделать запись на ремонт простой, а информацию об услугах — открытой и прозрачной.</p>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide">
+    <div class="eyebrow">Обзор возможностей</div>
+    <h2>7 страниц + панель управления</h2>
+    <div class="grid g4 grow">
+      <div class="card"><div class="num">01 · ГЛАВНАЯ</div><h3>Витрина сервиса</h3><p>Герой-блок, преимущества (оборудование, гарантия 1 год, быстро) и 6 популярных услуг.</p></div>
+      <div class="card"><div class="num">02 · УСЛУГИ</div><h3>Каталог по категориям</h3><p>Таблица: название, описание, длительность, цена и кнопка «Записаться» с подстановкой услуги.</p></div>
+      <div class="card"><div class="num">03 · МАСТЕРА</div><h3>Команда</h3><p>Карточки с фото, должностью, опытом и описанием; активных мастеров показывает фильтр.</p></div>
+      <div class="card"><div class="num">04 · ЗАПИСЬ</div><h3>Форма заявки</h3><p>Имя, телефон, автомобиль, услуга, мастер, дата и комментарий. После отправки — flash-сообщение.</p></div>
+      <div class="card"><div class="num">05 · КОНТАКТЫ</div><h3>Как нас найти</h3><p>Адрес, телефон, e-mail, режим работы и встроенная карта Яндекса.</p></div>
+      <div class="card"><div class="num">06 · ВХОД</div><h3>Регистрация и логин</h3><p>Стандартные формы Django: создать аккаунт, войти, выйти. Данные хранятся в БД.</p></div>
+      <div class="card"><div class="num">07 · КАБИНЕТ</div><h3>Личный кабинет</h3><p>Мои заявки, форма отзыва и лента отзывов других клиентов с оценкой от 1 до 5.</p></div>
+      <div class="card" style="border-color:rgba(251,191,36,.4)"><div class="num">+ · АДМИНКА</div><h3>/admin/</h3><p>Управление категориями, услугами, мастерами и заявками: фильтры, поиск, статусы.</p></div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide">
+    <div class="eyebrow">Как пользователь ходит по сайту</div>
+    <h2>Два сценария: клиент и администратор</h2>
+    <div class="card" style="margin-bottom:16px">
+      <span class="tag sky">КЛИЕНТ</span>
+      <div class="flow" style="margin-top:14px">
+        <span class="node">Главная</span><span class="arr">→</span>
+        <span class="node">Услуги и цены</span><span class="arr">→</span>
+        <span class="node">Выбор мастера</span><span class="arr">→</span>
+        <span class="node">Форма записи</span><span class="arr">→</span>
+        <span class="node">Личный кабинет</span><span class="arr">→</span>
+        <span class="node">Отзыв ⭐</span>
+      </div>
+      <p class="note" style="margin-top:22px">Кнопка «Записаться» передаёт ID услуги через URL: <code>?service=5</code> — форма сразу открывается с выбранной услугой.</p>
+    </div>
+    <div class="card">
+      <span class="tag violet">АДМИНИСТРАТОР</span>
+      <div class="flow" style="margin-top:14px">
+        <span class="node">/admin/</span><span class="arr">→</span>
+        <span class="node">Категории и услуги</span><span class="arr">→</span>
+        <span class="node">Мастера</span><span class="arr">→</span>
+        <span class="node">Заявки</span><span class="arr">→</span>
+        <span class="node">Сменить статус</span>
+      </div>
+      <p class="note" style="margin-top:24px">Статусы заявки: <span class="tag amber">Новая</span> → <span class="tag sky">Подтверждена</span> → <span class="tag green">Выполнена</span> или <span class="tag red">Отменена</span>.</p>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide">
+    <div class="eyebrow">Из чего собрано приложение</div>
+    <h2>Технологический стек</h2>
+    <div class="grid g4 grow">
+      <div class="card"><span class="tag amber">ЯЗЫК И ФРЕЙМВОРК</span><h3 style="margin-top:12px">Python 3.11<br>Django 5.2.17</h3><p>Архитектура MVT, встроенные auth, admin, messages, CSRF-защита.</p></div>
+      <div class="card"><span class="tag sky">БАЗА ДАННЫХ</span><h3 style="margin-top:12px">SQLite</h3><p>Файл db.sqlite3, миграции через makemigrations / migrate. Подходит для учебного проекта.</p></div>
+      <div class="card"><span class="tag green">ФРОНТЕНД</span><h3 style="margin-top:12px">HTML5 + CSS3</h3><p>Свой файл style.css, шаблоны с наследованием от base.html, адаптивные сетки.</p></div>
+      <div class="card"><span class="tag violet">ДОПОЛНЕНИЯ</span><h3 style="margin-top:12px">Pillow · Yandex Maps</h3><p>Pillow — загрузка фото мастеров; карта встроена через iframe без внешних зависимостей.</p></div>
+    </div>
+    <pre>requirements.txt → Django==5.2.17 · pillow==12.3.0
+config/settings.py → LANGUAGE_CODE='ru-ru', TIME_ZONE='Europe/Moscow'</pre>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide">
+    <div class="eyebrow">Организация кода</div>
+    <h2>Архитектура проекта</h2>
+    <div class="grid g2 grow">
+      <pre>WB/
+├─ manage.py            # запуск и команды Django
+├─ requirements.txt     # зависимости
+├─ db.sqlite3           # база данных
+├─ config/              # сам проект
+│  ├─ settings.py       # настройки
+│  ├─ urls.py           # общие маршруты + login/logout
+│  ├─ templates/        # base.html, home, services...
+│  └─ static/css/style.css
+└─ main/                # приложение
+   ├─ models.py         # таблицы БД
+   ├─ views.py          # логика страниц
+   ├─ forms.py          # ModelForm
+   ├─ urls.py           # маршруты приложения
+   ├─ admin.py          # панель управления
+   └─ migrations/       # история БД</pre>
+      <div>
+        <div class="card">
+          <h3 class="accent">Поток запроса (MVT)</h3>
+          <div class="flow" style="margin-top:14px">
+            <span class="node">URL</span><span class="arr">→</span><span class="node">view</span><span class="arr">→</span>
+            <span class="node">model / БД</span><span class="arr">→</span><span class="node">template</span><span class="arr">→</span><span class="node">HTML</span>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <h3 class="sky">Ключевые настройки</h3>
+          <div class="bullet"><span class="dot" style="background:var(--sky)"></span><p>Шаблоны подключены через <code>DIRS = [.../config/templates]</code>.</p></div>
+          <div class="bullet"><span class="dot" style="background:var(--sky)"></span><p><code>STATICFILES_DIRS</code> и <code>MEDIA_URL</code> для стилей и фотографий.</p></div>
+          <div class="bullet"><span class="dot" style="background:var(--sky)"></span><p><code>LOGIN_REDIRECT_URL = '/profile/'</code> — после входа сразу в кабинет.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide">
+    <div class="eyebrow">Модели данных</div>
+    <h2>На чём хранится информация</h2>
+    <div class="grid g3 grow">
+      <div class="card"><span class="tag amber">КАТАЛОГ</span><h3 style="margin-top:12px">ServiceCategory</h3><p>name — название категории услуг.</p>
+        <h3 style="margin-top:14px">Service</h3><p>category → FK, name, description, price (₽), duration (мин), is_active.</p></div>
+      <div class="card"><span class="tag sky">ЛЮДИ</span><h3 style="margin-top:12px">Master</h3><p>full_name, position, experience (лет), photo, description, is_active.</p>
+        <h3 style="margin-top:14px">User</h3><p>Встроенная модель Django: логин, пароль, авторизация.</p></div>
+      <div class="card"><span class="tag green">СОБЫТИЯ</span><h3 style="margin-top:12px">Appointment</h3><p>name, phone, car, service → FK, master → FK, date, comment, status, created_at.</p>
+        <h3 style="margin-top:14px">Review</h3><p>user → FK, text, rating (1–5), created_at.</p></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <p style="margin:0"><span class="accent">Связи:</span> категория → услуги (CASCADE), услуга/мастер в заявке → SET_NULL, отзыв → пользователь (CASCADE). Статус заявки — один из 4 вариантов через <code>STATUS_CHOICES</code>.</p>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide">
+    <div class="eyebrow">Процесс работы</div>
+    <h2>Как я это делал — 7 шагов</h2>
+    <div class="timeline grow">
+      <div class="step"><p><b>Каркас</b><br>django-admin startproject + startapp main</p></div>
+      <div class="step"><p><b>Настройки</b><br>INSTALLED_APPS, шаблоны, static/media, русский язык и Москва</p></div>
+      <div class="step"><p><b>Модели</b><br>описал 5 таблиц, makemigrations и migrate</p></div>
+      <div class="step"><p><b>Интерфейс</b><br>base.html + наследуемые страницы, единый CSS</p></div>
+      <div class="step"><p><b>Логика</b><br>views, ModelForm, POST → redirect, сообщения</p></div>
+      <div class="step"><p><b>Аккаунты</b><br>регистрация, вход/выход, кабинет с @login_required</p></div>
+      <div class="step"><p><b>Финал</b><br>админка, отладка, 3 коммита на GitHub</p></div>
+    </div>
+    <p class="note">Сначала были категории, услуги, мастера и заявки; модель отзывов Review добавилась отдельной миграцией <code>0002_review.py</code> — так выглядит эволюция базы.</p>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide">
+    <div class="eyebrow">Витрина проекта</div>
+    <h2>Как выглядит сайт: три ключевых экрана</h2>
+    <div class="grid g3 grow mockgrid">
+      <div style="display:flex;flex-direction:column;min-height:0">
+        <div class="mockwin">
+          <div class="mockbar"><i style="background:#fb7185"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i><span>localhost:8000/</span></div>
+          <div class="mockbody">
+            <div class="hero"><b>Ремонт автомобилей любой сложности</b><span>Опытные мастера, честные цены, гарантия 1 год</span><em>Записаться на ремонт</em></div>
+            <div class="minicards">
+              <div class="mini"><b>⚙️ Оборудование</b>Стенды</div>
+              <div class="mini"><b>🛡️ Гарантия</b>1 год на работы</div>
+              <div class="mini"><b>⏱️ Быстро</b>Обычно за 1 день</div>
+            </div>
+            <div class="minicards">
+              <div class="mini"><b>Диагностика</b>от 1 500 ₽</div>
+              <div class="mini"><b>ТО</b>от 3 000 ₽</div>
+              <div class="mini"><b>Ремонт</b>по факту</div>
+            </div>
+          </div>
+        </div>
+        <div class="mockcap">Главная <span>/</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;min-height:0">
+        <div class="mockwin">
+          <div class="mockbar"><i style="background:#fb7185"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i><span>localhost:8000/services/</span></div>
+          <div class="mockbody">
+            <b style="font-size:clamp(11px,1.1vw,15px);display:block;margin-bottom:8px">Наши услуги</b>
+            <div class="minihead"><span>УСЛУГА</span><span>ВРЕМЯ · ЦЕНА</span></div>
+            <div class="minir"><span>Диагностика двигателя</span><span>60 мин · 1 500 ₽</span></div>
+            <div class="minir"><span>Замена масла</span><span>30 мин · 1 200 ₽</span></div>
+            <div class="minir"><span>Тормозная система</span><span>120 мин · 4 500 ₽</span></div>
+            <div class="minir"><span>Подвеска</span><span>90 мин · 3 000 ₽</span></div>
+            <div class="minir"><span>Кондиционер</span><span>60 мин · 2 200 ₽</span></div>
+            <div class="minibtn" style="margin-top:10px">Записаться →</div>
+          </div>
+        </div>
+        <div class="mockcap">Каталог услуг <span>/services/</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;min-height:0">
+        <div class="mockwin">
+          <div class="mockbar"><i style="background:#fb7185"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i><span>localhost:8000/appointment/</span></div>
+          <div class="mockbody">
+            <b style="font-size:clamp(11px,1.1vw,15px);display:block;margin-bottom:8px">Записаться на ремонт</b>
+            <div class="minifield">Имя клиента</div>
+            <div class="minifield">Телефон</div>
+            <div class="minifield">Автомобиль</div>
+            <div class="minifield">Услуга ▾ &nbsp; Мастер ▾</div>
+            <div class="minifield">Желаемая дата 📅</div>
+            <div class="minifield">Комментарий</div>
+            <div class="minibtn">Отправить заявку</div>
+          </div>
+        </div>
+        <div class="mockcap">Форма записи <span>/appointment/</span></div>
+      </div>
+    </div>
+    <p class="note">Все экраны собраны из общего <code>base.html</code> (шапка, меню, подвал) и своего <code>style.css</code>; данные подставляет Django из базы.</p>
+  </section>
+
+  <!-- 10 -->
+  <section class="slide">
+    <div class="eyebrow">Итог</div>
+    <h2>Что получилось и что дальше</h2>
+    <div class="grid g2 grow">
+      <div class="card" style="border-color:rgba(52,211,153,.35)">
+        <span class="tag green">ГОТОВО</span>
+        <div class="bullet" style="margin-top:14px"><span class="dot" style="background:var(--green)"></span><p>Полноценный сайт автосервиса с каталогом, записью, кабинетом и отзывами.</p></div>
+        <div class="bullet"><span class="dot" style="background:var(--green)"></span><p>Данные хранятся и меняются через админку; всё работает на локальном сервере Django.</p></div>
+        <div class="bullet"><span class="dot" style="background:var(--green)"></span><p>Код закоммичен и выложен в открытый репозиторий на GitHub.</p></div>
+      </div>
+      <div class="card" style="border-color:rgba(56,189,248,.35)">
+        <span class="tag sky">ПЛАНЫ РАЗВИТИЯ</span>
+        <div class="bullet" style="margin-top:14px"><span class="dot" style="background:var(--sky)"></span><p>Календарь записи и проверка, свободен ли мастер в выбранную дату.</p></div>
+        <div class="bullet"><span class="dot" style="background:var(--sky)"></span><p>Уведомления о заявках, автозаполнение прав клиента, загрузка фото.</p></div>
+        <div class="bullet"><span class="dot" style="background:var(--sky)"></span><p>Тесты, настройки для продакшена и деплой на хостинг.</p></div>
+      </div>
+    </div>
+    <p style="margin-top:22px;text-align:center">Код проекта: <a class="big-link" href="https://github.com/vorv102/WB" target="_blank" rel="noopener">github.com/vorv102/WB</a></p>
+    <h2 style="text-align:center;margin-top:14px;font-size:clamp(24px,3vw,40px)">Спасибо за внимание! <span class="accent">Вопросы?</span></h2>
+  </section>
+
+</div>
+
+<div class="hint">← → или пробел — листать · Home / End — первый / последний слайд</div>
+<div class="controls">
+  <div class="dots" id="dots"></div>
+  <div class="nav">
+    <span class="counter" id="counter">01 / 10</span>
+    <button class="arrow" id="prev" aria-label="Назад">‹</button>
+    <button class="arrow" id="next" aria-label="Вперёд">›</button>
+  </div>
+</div>
+
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  const dotsBox = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+  let i = 0;
+
+  slides.forEach((_, n) => {
+    const b = document.createElement('button');
+    b.className = 'dotbtn' + (n === 0 ? ' on' : '');
+    b.title = 'Слайд ' + (n + 1);
+    b.addEventListener('click', () => go(n));
+    dotsBox.appendChild(b);
+  });
+
+  function go(n){
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    [...dotsBox.children].forEach((d, k) => d.classList.toggle('on', k === i));
+    counter.textContent = String(i + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
+    progress.style.width = ((i + 1) / slides.length * 100) + '%';
+  }
+
+  document.getElementById('prev').addEventListener('click', () => go(i - 1));
+  document.getElementById('next').addEventListener('click', () => go(i + 1));
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)) { e.preventDefault(); go(i + 1); }
+    else if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); go(i - 1); }
+    else if (e.key === 'Home') go(0);
+    else if (e.key === 'End') go(slides.length - 1);
+    else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+      else document.exitFullscreen?.();
+    }
+  });
+  go(0);
+</script>
+</body>
+</html>
